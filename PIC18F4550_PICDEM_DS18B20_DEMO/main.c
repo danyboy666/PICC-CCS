@@ -17,7 +17,7 @@
 
 // compiled with PCW CCS v 4.104
 // PIDCDEM hex output note: prepend :020000040000FA for PIDCDEM software
-#EXPORT (FILE=.\rls\RTC_DS18S20_v1_0.HEX)
+#EXPORT (FILE=.\rls\DS18S20_v1_0.HEX)
 //Bibliothèques utilisés
 #include <main.h> //Header pour le programme.
 #include <.\lib\DS18B20.c> //Mini driver pour le capteur.
