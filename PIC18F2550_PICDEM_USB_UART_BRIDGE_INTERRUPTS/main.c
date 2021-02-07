@@ -1,0 +1,120 @@
+///////////////////////////////////////////////////////////////////////////////
+/*****************************************************************************/
+/*                                                                           */
+/* This code is heavily based on PIC CCS ex.serial.c and ex.serial2.c.       */
+/*                                                                           */
+/* The pic will put data coming from the rs_232 stream (ESP)                 */
+/* in usb_cdc_putc() and vice-versa whenever usb_cdc_kbhit() has data it     */
+/* will be dumped in the rs_232 stream (ESP) via fputc().                    */
+/*                                                                             */
+/* Copyright Dany Ferron                                                     */
+/*****************************************************************************/
+/*                                                                           */ 
+/*                                                                           */
+/*                                                                           */
+/* le 20 janvier 2021                                                        */
+/*                                                                           */
+/*****************************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+
+
+// compiled with PCW CCS v 4.104
+#include <main.h> //Header file for this program.
+
+
+#define T_BUFFER_SIZE 64
+byte t_buffer[T_BUFFER_SIZE];
+byte t_next_in = 0;
+byte t_next_out = 0;
+
+
+#int_tbe
+void tbe_isr() {
+
+   if(t_next_in!=t_next_out)
+   {
+      putc(t_buffer[t_next_out]);
+      t_next_out=(t_next_out+1) % T_BUFFER_SIZE;
+   }
+   else
+      disable_interrupts(int_tbe);
+}
+
+void bputc(char c) {
+   short restart;
+   int ni;
+
+   restart=t_next_in==t_next_out;
+   t_buffer[t_next_in]=c;
+   ni=(t_next_in+1) % T_BUFFER_SIZE;
+   while(ni==t_next_out);
+   t_next_in=ni;
+   if(restart)
+      enable_interrupts(int_tbe);
+}
+
+#define BUFFER_SIZE 32
+BYTE buffer[BUFFER_SIZE];
+BYTE next_in = 0;
+BYTE next_out = 0;
+
+
+#int_rda
+void rda_isr() {
+   int t;
+
+   buffer[next_in]=fgetc(ESP);
+   usb_cdc_putc(buffer[next_in]);
+   t=next_in;
+   next_in=(next_in+1) % BUFFER_SIZE;
+   if(next_in==next_out)
+     next_in=t;           // Buffer full !!
+}
+
+#define bkbhit (next_in!=next_out)
+
+BYTE bgetc() {
+   BYTE c;
+
+   while(!bkbhit) ;
+   c=buffer[next_out];
+   next_out=(next_out+1) % BUFFER_SIZE;
+   return(c);
+}
+
+
+
+void main(void)
+{
+   setup_adc_ports(NO_ANALOGS);
+   enable_interrupts(int_rda);
+   enable_interrupts(global);
+   usb_init_cs();
+   usb_cdc_init();
+/*   
+   char c;
+   
+    while (true)
+      {
+         usb_task();   
+         if (kbhit()) 
+         {           
+            c=fgetc(ESP);
+            usb_cdc_putc(c);
+         }
+         if (usb_cdc_kbhit()) // The same as kbhit(), returns TRUE if there is 1 or more character in the receive buffer.
+         {
+            c=usb_cdc_getc();
+            fputc(c);
+         }
+      }      
+}
+*/
+
+do {
+      delay_us(50);
+      while(bkbhit)
+        bgetc()=usb_cdc_getc();
+        fputc( bgetc(), ESP );
+   } while (true);
+}

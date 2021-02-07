@@ -1,0 +1,6 @@
+>>> Warning 203 "C:\Program Files (x86)\PICC\drivers\pic18_usb.c" Line 531(1,1): Condition always TRUE
+>>> Warning 216 "main.c" Line 122(0,1): Interrupts disabled during call to prevent re-entrancy:  (usb_token_reset)
+>>> Warning 216 "main.c" Line 122(0,1): Interrupts disabled during call to prevent re-entrancy:  (usb_flush_out)
+>>> Warning 202 "C:\Users\dferron\OneDrive\Documents\PICC-CCS-main\PICC-CCS-main\PIC18F2550_PICDEM_USB_UART_BRIDGE_INTERRUPTS\main.h" Line 13(5,8): Variable never used:   rs232_errors
+      Memory usage:   ROM=15%      RAM=25% - 27%
+      0 Errors,  4 Warnings.
