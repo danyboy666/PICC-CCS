@@ -1,0 +1,8 @@
+>>> Warning 203 "C:\Program Files (x86)\PICC\drivers\pic18_usb.c" Line 531(1,1): Condition always TRUE
+>>> Warning 203 "main.c" Line 150(1,1): Condition always TRUE
+>>> Warning 216 "main.c" Line 159(0,1): Interrupts disabled during call to prevent re-entrancy:  (usb_token_reset)
+>>> Warning 202 "main.c" Line 29(5,8): Variable never used:   rs232_errors
+>>> Warning 202 "main.c" Line 41(6,26): Variable never used:   usb_cdc_oldconnected
+>>> Warning 202 "main.c" Line 145(9,10): Variable never used:   c
+      Memory usage:   ROM=14%      RAM=22% - 24%
+      0 Errors,  6 Warnings.
